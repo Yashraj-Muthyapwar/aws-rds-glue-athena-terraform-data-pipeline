@@ -23,12 +23,11 @@ A production‑grade data pipeline that decouples analytics from OLTP, transform
 
 A retail company runs expensive analytical queries directly against its production OLTP database, causing performance degradation and scalability bottlenecks. This project solves that by implementing a fully decoupled, cloud‑native analytics and recommendation platform on AWS:
 
-1. **Batch ETL Pipeline** — Transforms operational data into analytics-ready formats by extracting data from RDS MySQL, processing it using AWS Glue (PySpark), storing it in Parquet star schema format on S3, and enabling analytical queries through Athena.
+1. **Batch ETL Pipeline** — Transforms operational data into analytics-ready formats by extracting data from **RDS MySQL**, processing it using **AWS Glue (PySpark)**, storing it in **Parquet star schema** format on **S3**, and enabling analytical queries through **Athena**.
 
-2. **Real-Time ML Recommendations** — Delivers low-latency personalization by ingesting live user activity via Kinesis Data Streams, running embedding-based inference in Lambda against a pgvector database, and delivering recommendation outputs to S3 via Firehose.
+2. **Real-Time ML Recommendations** — Delivers low-latency personalization by ingesting live user activity via **Kinesis Data Streams**, running embedding-based inference in **Lambda** against a **pgvector database**, and delivering recommendation outputs to **S3** via **Firehose**.
 
-3. **Resilient Web Infrastructure** — Ensures production-grade availability and scalability through an Application Load Balancer distributing traffic across Multi-AZ EC2 Auto Scaling instances, with CloudWatch providing monitoring and operational visibility aligned with AWS Well-Architected best practices.
-
+3. **Resilient Web Infrastructure** — Ensures production-grade availability and scalability through an **Application Load Balancer** distributing traffic across **Multi-AZ EC2 Auto Scaling instances**, with **CloudWatch** providing monitoring and operational visibility aligned with AWS Well-Architected best practices.
 
 ## 🏛️ Architecture
 

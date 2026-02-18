@@ -163,6 +163,14 @@ Transforms 8 normalized OLTP tables into an analytics-ready **star schema**:
 
 ---
 
-## 📄 License
+## 📝 License
+This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for more details.
 
-MIT
+## 🌟 About Me
+
+Hi there! I'm **Yashraj Muthyapwar**, a Data Engineer passionate about building scalable, cloud-native data systems on AWS. This project reflects my hands-on experience designing real-world batch and streaming pipelines using modern data engineering tools and Infrastructure as Code.
+
+> ### 🌟 Contributions Welcome  
+> Built with ❤️ on AWS to make retail analytics & real‑time recommendations feel effortless.
+
+

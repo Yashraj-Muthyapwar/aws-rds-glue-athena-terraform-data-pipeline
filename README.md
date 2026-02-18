@@ -1,9 +1,13 @@
 <div align="center">
 
 # 🏗️ Retail Analytics Platform
-### Batch ETL & Real-Time ML Recommendations on AWS
 
-*Batch ETL (RDS → Glue → S3 → Athena) and real-time ML recommendations (Kinesis → Lambda → pgvector) on AWS, fully provisioned with Terraform IaC.*
+**Batch ETL & Real-Time ML Recommendations on AWS**
+
+A production‑grade data pipeline that decouples analytics from OLTP, transforms raw retail data into a star schema, and delivers real‑time product recommendations all provisioned with Terraform IaC.
+
+**Tech stack:** Batch ETL (RDS → Glue → S3 → Athena) and real‑time ML recommendations (Kinesis → Lambda → pgvector) on AWS.
+
 
 [![Terraform](https://img.shields.io/badge/IaC-Terraform-7B42BC?logo=terraform&logoColor=white)](https://www.terraform.io/)
 [![AWS](https://img.shields.io/badge/Cloud-AWS-FF9900?logo=amazonaws&logoColor=white)](https://aws.amazon.com/)
@@ -11,22 +15,20 @@
 [![Athena](https://img.shields.io/badge/Query-Amazon%20Athena-232F3E?logo=amazonaws&logoColor=white)](https://aws.amazon.com/athena/)
 [![Kinesis](https://img.shields.io/badge/Streaming-Kinesis-FF4F00?logo=amazonaws&logoColor=white)](https://aws.amazon.com/kinesis/)
 [![pgvector](https://img.shields.io/badge/VectorDB-pgvector-336791?logo=postgresql&logoColor=white)](https://github.com/pgvector/pgvector)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 </div>
 
----
-
 ## 💡 Problem Statement
 
-A retail company runs expensive analytical queries directly against its production OLTP database, causing performance degradation and scalability bottlenecks. This project solves that by building a fully decoupled, cloud-native analytics and recommendation platform:
+A retail company runs expensive analytical queries directly against its production OLTP database, causing performance degradation and scalability bottlenecks. This project solves that by implementing a fully decoupled, cloud‑native analytics and recommendation platform on AWS:
 
-1. **Batch ETL Pipeline** — Extracts data from RDS MySQL, transforms it into a star schema using AWS Glue (PySpark), stores it as Parquet on S3, and serves analytical queries via Athena.
+1. **Batch ETL Pipeline** — Transforms operational data into analytics-ready formats by extracting data from RDS MySQL, processing it using AWS Glue (PySpark), storing it in Parquet star schema format on S3, and enabling analytical queries through Athena.
 
-2. **Real-Time ML Recommendations** — Ingests live user activity via Kinesis Data Streams, runs embedding-based inference through Lambda against a pgvector database, and delivers personalized product recommendations to S3 via Kinesis Firehose.
+2. **Real-Time ML Recommendations** — Delivers low-latency personalization by ingesting live user activity via Kinesis Data Streams, running embedding-based inference in Lambda against a pgvector database, and delivering recommendation outputs to S3 via Firehose.
 
-3. **Resilient Web Infrastructure** — Multi-AZ EC2 deployment behind an ALB with auto-scaling, security group hardening, and CloudWatch monitoring aligned with the AWS Well-Architected Framework.
+3. **Resilient Web Infrastructure** — Ensures production-grade availability and scalability through an Application Load Balancer distributing traffic across Multi-AZ EC2 Auto Scaling instances, with CloudWatch providing monitoring and operational visibility aligned with AWS Well-Architected best practices.
 
----
 
 ## 🏛️ Architecture
 
@@ -44,7 +46,6 @@ A retail company runs expensive analytical queries directly against its producti
 
 ![Web App Architecture](./images/web-app-architecture.png)
 
----
 
 ## 🛠️ Tech Stack
 
@@ -60,8 +61,6 @@ A retail company runs expensive analytical queries directly against its producti
 | **Networking** | VPC, ALB, Security Groups, Multi-AZ |
 | **Monitoring** | Amazon CloudWatch |
 | **IaC** | Terraform (modular HCL) |
-
----
 
 ## 📁 Project Structure
 
@@ -99,8 +98,6 @@ aws-retail-data-pipeline/
 │
 └── images/                       # Architecture diagrams
 ```
-
----
 
 ## 🚀 Getting Started
 
@@ -143,15 +140,11 @@ psql --host=<VectorDBHost> --username=postgres --port=5432
 \i '../sql/embeddings.sql'
 ```
 
----
-
 ## 📊 Data Model
 
 Transforms 8 normalized OLTP tables into an analytics-ready **star schema**:
 
 ![Star Schema](./images/star-schema.png)
-
----
 
 ## 🔑 Key Design Decisions
 
@@ -160,8 +153,6 @@ Transforms 8 normalized OLTP tables into an analytics-ready **star schema**:
 - **pgvector over managed Vector DB** — Cost-effective embedding similarity search on RDS PostgreSQL without the overhead of a dedicated vector store
 - **Serverless streaming** — Lambda + Firehose auto-scales with traffic; zero idle cost
 - **Security-first** — Credentials injected via environment variables, ALB security groups restrict inbound traffic, VPC isolation for all data resources
-
----
 
 ## 📝 License
 This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for more details.

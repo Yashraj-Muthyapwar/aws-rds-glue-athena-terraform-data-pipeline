@@ -29,6 +29,10 @@ A retail company runs expensive analytical queries directly against its producti
 
 3. **Resilient Web Infrastructure** — Ensures production-grade availability and scalability through an **Application Load Balancer** distributing traffic across **Multi-AZ EC2 Auto Scaling instances**, with **CloudWatch** providing monitoring and operational visibility aligned with AWS Well-Architected best practices.
 
+## 🔄 End-to-End Data Flow
+
+The three components form a single unified system: the web tier (ALB + EC2 Auto Scaling) serves the retail application and generates order and event data → the batch ETL pipeline nightly extracts that data from RDS MySQL and transforms it into a star schema for analytics → the streaming pipeline simultaneously processes real-time browse events through Kinesis, performs embedding-based inference against pgvector, and delivers personalized recommendations back to S3.
+
 ## 🏛️ Architecture
 
 **Batch ETL Pipeline:**
@@ -59,7 +63,7 @@ A retail company runs expensive analytical queries directly against its producti
 | **Vector DB** | RDS PostgreSQL + pgvector |
 | **Networking** | VPC, ALB, Security Groups, Multi-AZ |
 | **Monitoring** | Amazon CloudWatch |
-| **IaC** | Terraform (modular HCL) |
+| **IaC** | Terraform (modular HCL), AWS CloudFormation |
 
 ## 📁 Project Structure
 
@@ -85,15 +89,19 @@ aws-retail-data-pipeline/
 │   │   ├── outputs.tf
 │   │   ├── variables.tf
 │   │   ├── backend.tf
-│   │   └── modules/
-│   │       ├── etl/              # Glue ETL for ML training data
-│   │       ├── vector-db/        # RDS PostgreSQL + pgvector
-│   │       └── streaming-inference/ # Kinesis + Lambda
+│   │   ├── modules/
+│   │   │   ├── etl/              # Glue ETL for ML training data
+│   │   │   ├── vector-db/        # RDS PostgreSQL + pgvector
+│   │   │   └── streaming-inference/ # Kinesis + Lambda
 │   │   └── assets/
 │   │       ├── glue_job/etl_job.py
 │   │       └── transformation_lambda/main.py
 │   ├── scripts/setup.sh
 │   └── sql/embeddings.sql        # pgvector setup & S3 import
+│
+├── app-infrastructure/
+│   ├── template.yaml             # CloudFormation: ALB + EC2 Auto Scaling + CloudWatch
+│   ├── template.json             # same stack in JSON format
 │
 └── images/                       # Architecture diagrams
 ```
@@ -107,7 +115,16 @@ aws-retail-data-pipeline/
 - **MySQL** & **psql** clients
 - **Python** 3.8+
 
-### Deploy the Batch ETL Pipeline
+### 1. Deploy the App Infrastructure
+
+```bash
+aws cloudformation deploy \
+  --template-file app-infrastructure/template.yaml \
+  --stack-name retail-app-infra \
+  --capabilities CAPABILITY_IAM
+```
+
+### 2. Deploy the Batch ETL Pipeline
 
 ```bash
 # Set environment variables
@@ -122,7 +139,7 @@ terraform init && terraform plan && terraform apply
 aws glue start-job-run --job-name <project>-etl-job | jq -r '.JobRunId'
 ```
 
-### Deploy the Streaming Recommendation Pipeline
+### 3. Deploy the Streaming Recommendation Pipeline
 
 ```bash
 export DB_USERNAME=your_username
@@ -145,6 +162,13 @@ Transforms 8 normalized OLTP tables into an analytics-ready **star schema**:
 
 ![Star Schema](./images/star-schema.png)
 
+| Table | Type | Key Columns |
+|-------|------|-------------|
+| `fact_orders` | Fact | orderNumber, customerNumber, productCode, quantityOrdered, priceEach, orderAmount, orderDate |
+| `dim_customers` | Dimension | customerNumber, customerName, contactName, creditLimit |
+| `dim_products` | Dimension | productCode, productName, productLine, productVendor |
+| `dim_locations` | Dimension | postalCode, city, state, country |
+
 ## 🔑 Key Design Decisions
 
 - **Modular Terraform** — Three composable modules (`etl`, `vector-db`, `streaming-inference`) with explicit `depends_on` ordering for safe sequential deployment
@@ -152,6 +176,7 @@ Transforms 8 normalized OLTP tables into an analytics-ready **star schema**:
 - **pgvector over managed Vector DB** — Cost-effective embedding similarity search on RDS PostgreSQL without the overhead of a dedicated vector store
 - **Serverless streaming** — Lambda + Firehose auto-scales with traffic; zero idle cost
 - **Security-first** — Credentials injected via environment variables, ALB security groups restrict inbound traffic, VPC isolation for all data resources
+- **Validated under load** — Apache Benchmark stress test (1M requests, 200 concurrent connections) confirmed CloudWatch-triggered Auto Scaling fires correctly and scales back in after load drops
 
 ## 📝 License
 This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for more details.

@@ -35,7 +35,7 @@ The three components form a single unified system: the web tier (ALB + EC2 Auto 
 
 ## 🏛️ Architecture
 
-![Architecture Overview](images/architecture-overview.png)
+![Architecture Overview](./images/architecture-overview.png)
 
 
 ## 🛠️ Tech Stack

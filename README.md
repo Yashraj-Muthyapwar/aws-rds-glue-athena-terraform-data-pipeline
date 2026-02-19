@@ -35,19 +35,7 @@ The three components form a single unified system: the web tier (ALB + EC2 Auto 
 
 ## 🏛️ Architecture
 
-**Batch ETL Pipeline:**
-
-![Batch ETL Architecture](./images/batch-etl-architecture.png)
-
-**ML Recommendation Pipeline (Batch + Streaming):**
-
-![Streaming Batch Architecture](./images/streaming-batch-architecture.png)
-
-![Streaming Real-time Architecture](./images/streaming-realtime-architecture.png)
-
-**Web App Infrastructure:**
-
-![Web App Architecture](./images/web-app-architecture.png)
+![Architecture Overview](images/architecture-overview.png)
 
 
 ## 🛠️ Tech Stack
@@ -161,13 +149,6 @@ psql --host=<VectorDBHost> --username=postgres --port=5432
 Transforms 8 normalized OLTP tables into an analytics-ready **star schema**:
 
 ![Star Schema](./images/star-schema.png)
-
-| Table | Type | Key Columns |
-|-------|------|-------------|
-| `fact_orders` | Fact | orderNumber, customerNumber, productCode, quantityOrdered, priceEach, orderAmount, orderDate |
-| `dim_customers` | Dimension | customerNumber, customerName, contactName, creditLimit |
-| `dim_products` | Dimension | productCode, productName, productLine, productVendor |
-| `dim_locations` | Dimension | postalCode, city, state, country |
 
 ## 🔑 Key Design Decisions
 

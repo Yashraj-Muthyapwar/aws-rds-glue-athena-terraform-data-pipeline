@@ -36,7 +36,7 @@ The three components form a single unified system: the web tier (ALB + EC2 Auto 
 ## 🏛️ Architecture
 
 ![Architecture Overview](./images/architecture-overview.png)
-
+Everything is provisioned using **Terraform** (Infrastructure as Code), organized into reusable modules.
 
 ## 🛠️ Tech Stack
 
